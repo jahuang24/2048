@@ -63,6 +63,17 @@ Grid.prototype.eachCell = function (callback) {
   }
 };
 
+// Get the value of the highest tile on the grid
+Grid.prototype.highestValue = function () {
+  var highest = 0;
+
+  this.eachCell(function (x, y, tile) {
+    if (tile && tile.value > highest) highest = tile.value;
+  });
+
+  return highest;
+};
+
 // Check if there are any cells available
 Grid.prototype.cellsAvailable = function () {
   return !!this.availableCells().length;

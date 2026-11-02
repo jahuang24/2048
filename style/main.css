@@ -228,6 +228,34 @@ hr {
   position: absolute;
   z-index: 2; }
 
+.fog {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 50;
+  overflow: hidden;
+  border-radius: 6px;
+  pointer-events: none;
+  -webkit-transition: opacity 400ms ease-in-out;
+  -moz-transition: opacity 400ms ease-in-out;
+  transition: opacity 400ms ease-in-out; }
+  .fog.fog-revealed {
+    opacity: 0;
+    -webkit-transition: opacity 200ms ease-in-out;
+    -moz-transition: opacity 200ms ease-in-out;
+    transition: opacity 200ms ease-in-out; }
+
+.fog-window {
+  position: absolute;
+  top: 128.75px;
+  left: 128.75px;
+  width: 242.5px;
+  height: 242.5px;
+  border-radius: 6px;
+  box-shadow: 0 0 0 500px #8f7f71; }
+
 .tile, .tile .tile-inner {
   width: 107px;
   height: 107px;
@@ -660,6 +688,34 @@ hr {
   .tile-container {
     position: absolute;
     z-index: 2; }
+
+  .fog {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 50;
+    overflow: hidden;
+    border-radius: 6px;
+    pointer-events: none;
+    -webkit-transition: opacity 400ms ease-in-out;
+    -moz-transition: opacity 400ms ease-in-out;
+    transition: opacity 400ms ease-in-out; }
+    .fog.fog-revealed {
+      opacity: 0;
+      -webkit-transition: opacity 200ms ease-in-out;
+      -moz-transition: opacity 200ms ease-in-out;
+      transition: opacity 200ms ease-in-out; }
+
+  .fog-window {
+    position: absolute;
+    top: 72.5px;
+    left: 72.5px;
+    width: 135px;
+    height: 135px;
+    border-radius: 6px;
+    box-shadow: 0 0 0 280px #8f7f71; }
 
   .tile, .tile .tile-inner {
     width: 58px;

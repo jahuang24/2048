@@ -18,6 +18,8 @@ $tile-gold-glow-color: lighten($tile-gold-color, 15%);
 
 $game-container-margin-top: 40px;
 $game-container-background: #bbada0;
+$fog-color: #8f7f71;
+$fog-reveal-speed: 200ms;
 
 $transition-speed: 100ms;
 
@@ -286,6 +288,38 @@ hr {
   .tile-container {
     position: absolute;
     z-index: 2;
+  }
+
+  // Fog of war: covers everything except the center 2x2 cells
+  .fog {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 50;
+    overflow: hidden;
+    border-radius: $tile-border-radius * 2;
+    pointer-events: none;
+
+    @include transition(opacity $fog-reveal-speed * 2 ease-in-out);
+
+    &.fog-revealed {
+      opacity: 0;
+      @include transition(opacity $fog-reveal-speed ease-in-out);
+    }
+  }
+
+  .fog-window {
+    position: absolute;
+    $window-offset: $grid-spacing + $tile-size + $grid-spacing / 2;
+    $window-size: $tile-size * 2 + $grid-spacing * 2;
+    top: $window-offset;
+    left: $window-offset;
+    width: $window-size;
+    height: $window-size;
+    border-radius: $tile-border-radius * 2;
+    box-shadow: 0 0 0 $field-width $fog-color;
   }
 
   .tile {

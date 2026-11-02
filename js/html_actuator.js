@@ -3,8 +3,11 @@ function HTMLActuator() {
   this.scoreContainer   = document.querySelector(".score-container");
   this.bestContainer    = document.querySelector(".best-container");
   this.messageContainer = document.querySelector(".game-message");
+  this.fogContainer     = document.querySelector(".fog");
 
-  this.score = 0;
+  this.score          = 0;
+  this.revealDuration = 1500; // How long a new highest tile lifts the fog (ms)
+  this.revealTimeout  = null;
 }
 
 HTMLActuator.prototype.actuate = function (grid, metadata) {
@@ -23,6 +26,7 @@ HTMLActuator.prototype.actuate = function (grid, metadata) {
 
     self.updateScore(metadata.score);
     self.updateBestScore(metadata.bestScore);
+    self.updateFog(metadata);
 
     if (metadata.terminated) {
       if (metadata.over) {
@@ -38,6 +42,32 @@ HTMLActuator.prototype.actuate = function (grid, metadata) {
 // Continues the game (both restart and keep playing)
 HTMLActuator.prototype.continueGame = function () {
   this.clearMessage();
+  this.hideBoard();
+};
+
+// Lift the fog when the game ends, or briefly when a new highest tile appears
+HTMLActuator.prototype.updateFog = function (metadata) {
+  var self = this;
+
+  if (metadata.terminated) {
+    this.revealBoard();
+  } else if (metadata.newHighest) {
+    this.revealBoard();
+
+    this.revealTimeout = window.setTimeout(function () {
+      self.hideBoard();
+    }, this.revealDuration);
+  }
+};
+
+HTMLActuator.prototype.revealBoard = function () {
+  window.clearTimeout(this.revealTimeout);
+  this.fogContainer.classList.add("fog-revealed");
+};
+
+HTMLActuator.prototype.hideBoard = function () {
+  window.clearTimeout(this.revealTimeout);
+  this.fogContainer.classList.remove("fog-revealed");
 };
 
 HTMLActuator.prototype.clearContainer = function (container) {
