@@ -43,6 +43,7 @@ GameManager.prototype.setup = function () {
     this.over        = previousState.over;
     this.won         = previousState.won;
     this.keepPlaying = previousState.keepPlaying;
+    this.highestTile = previousState.highestTile || this.grid.highestValue();
   } else {
     this.grid        = new Grid(this.size);
     this.score       = 0;
@@ -52,6 +53,7 @@ GameManager.prototype.setup = function () {
 
     // Add the initial tiles
     this.addStartTiles();
+    this.highestTile = this.grid.highestValue();
   }
 
   // Update the actuator
@@ -76,7 +78,7 @@ GameManager.prototype.addRandomTile = function () {
 };
 
 // Sends the updated grid to the actuator
-GameManager.prototype.actuate = function () {
+GameManager.prototype.actuate = function (newHighest) {
   if (this.storageManager.getBestScore() < this.score) {
     this.storageManager.setBestScore(this.score);
   }
@@ -93,7 +95,8 @@ GameManager.prototype.actuate = function () {
     over:       this.over,
     won:        this.won,
     bestScore:  this.storageManager.getBestScore(),
-    terminated: this.isGameTerminated()
+    terminated: this.isGameTerminated(),
+    newHighest: !!newHighest
   });
 
 };
@@ -105,7 +108,8 @@ GameManager.prototype.serialize = function () {
     score:       this.score,
     over:        this.over,
     won:         this.won,
-    keepPlaying: this.keepPlaying
+    keepPlaying: this.keepPlaying,
+    highestTile: this.highestTile
   };
 };
 
@@ -138,6 +142,7 @@ GameManager.prototype.move = function (direction) {
   var vector     = this.getVector(direction);
   var traversals = this.buildTraversals(vector);
   var moved      = false;
+  var newHighest = false;
 
   // Save the current tile positions and remove merger information
   this.prepareTiles();
@@ -168,6 +173,12 @@ GameManager.prototype.move = function (direction) {
 
           // The mighty 2048 tile
           if (merged.value === 2048) self.won = true;
+
+          // A new highest tile briefly lifts the fog of war
+          if (merged.value > self.highestTile) {
+            self.highestTile = merged.value;
+            newHighest       = true;
+          }
         } else {
           self.moveTile(tile, positions.farthest);
         }
@@ -186,7 +197,7 @@ GameManager.prototype.move = function (direction) {
       this.over = true; // Game over!
     }
 
-    this.actuate();
+    this.actuate(newHighest);
   }
 };
 
